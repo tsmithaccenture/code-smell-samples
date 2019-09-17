@@ -4,8 +4,10 @@ namespace Smelly.Code.Core
 {
     public class EvercraftGame
     {
-        private int?[] Strength { get; } = {null, null};
-        private int?[] Dexterity { get; } = {null, null};
+        private int?[] Str { get; } = {null, null};
+        private int?[] Dex { get; } = {null, null};
+        public int?[] Const { get; } = {null, null};
+        public bool[] Attacked { get; } = {false, false};
         public Character[] Chars { get; set; }
 
         public void Start()
@@ -23,86 +25,87 @@ namespace Smelly.Code.Core
             var dM = 0;
             var charIndex = Array.IndexOf(Chars, character);
 
-            if (charIndex == 0)
+            if (charIndex != 0)
             {
-                if (Strength[0] == 1)
+                Attacked[1] = true;
+                if (Str[0] == 1)
                 {
                     sM = -5;
                 }
-                else if (Strength[0] == 2 || Strength[0] == 3)
+                else if (Str[0] == 2 || Str[0] == 3)
                 {
                     sM = -4;
                 }
-                else if (Strength[0] == 4 || Strength[0] == 5)
+                else if (Str[0] == 4 || Str[0] == 5)
                 {
                     sM = -3;
                 }
-                else if (Strength[0] == 6 || Strength[0] == 7)
+                else if (Str[0] == 6 || Str[0] == 7)
                 {
                     sM = -2;
                 }
-                else if (Strength[0] == 8 || Strength[0] == 9)
+                else if (Str[0] == 8 || Str[0] == 9)
                 {
                     sM = -1;
                 }
-                else if (Strength[0] == 12 || Strength[0] == 13)
+                else if (Str[0] == 12 || Str[0] == 13)
                 {
                     sM = 1;
                 }
-                else if (Strength[0] == 14 || Strength[0] == 15)
+                else if (Str[0] == 14 || Str[0] == 15)
                 {
                     sM = 2;
                 }
-                else if (Strength[0] == 16 || Strength[0] == 17)
+                else if (Str[0] == 16 || Str[0] == 17)
                 {
                     sM = 3;
                 }
-                else if (Strength[0] == 18 || Strength[0] == 19)
+                else if (Str[0] == 18 || Str[0] == 19)
                 {
                     sM = 4;
                 }
-                else if (Strength[0] == 20)
+                else if (Str[0] == 20)
                 {
                     sM = 5;
                 }
 
-                if (Dexterity[1] == 1)
+                if (Dex[1] == 1)
                 {
                     dM = -5;
                 }
-                else if (Dexterity[1] == 2 || Dexterity[1] == 3)
+                else if (Dex[1] == 2 || Dex[1] == 3)
                 {
                     dM = -4;
                 }
-                else if (Dexterity[1] == 4 || Dexterity[1] == 5)
+                else if (Dex[1] == 4 || Dex[1] == 5)
                 {
                     dM = -3;
                 }
-                else if (Dexterity[1] == 6 || Dexterity[1] == 7)
+                else if (Dex[1] == 6 || Dex[1] == 7)
                 {
                     dM = -2;
                 }
-                else if (Dexterity[1] == 8 || Dexterity[1] == 9)
+                else if (Dex[1] == 8 || Dex[1] == 9)
                 {
                     dM = -1;
                 }
-                else if (Dexterity[1] == 12 || Dexterity[1] == 13)
+                else if (Dex[1] == 12 || Dex[1] == 13)
                 {
                     dM = 1;
                 }
-                else if (Dexterity[1] == 14 || Dexterity[1] == 15)
+                else if (Dex[1] == 14 || Dex[1] == 15)
                 {
                     dM = 2;
                 }
-                else if (Dexterity[1] == 16 || Dexterity[1] == 17)
+                else if (Dex[1] == 16 || Dex[1] == 17)
                 {
                     dM = 3;
                 }
-                else if (Dexterity[1] == 18 || Dexterity[1] == 19)
+                else if (Dex[1] == 18 || Dex[1] == 19)
                 {
                     dM = 4;
                 }
-                else if (Dexterity[1] == 20)
+                else if (Dex[1] == 20)
                 {
                     dM = 5;
                 }
@@ -112,7 +115,7 @@ namespace Smelly.Code.Core
                     Chars[1].HitPoints = Chars[1].HitPoints - 1;
                 }
 
-                if (Strength[0].HasValue)
+                if (Str[0].HasValue)
                 {
                     if (sM > 0 && roll + sM >= Chars[1].Armor)
                     {
@@ -132,84 +135,85 @@ namespace Smelly.Code.Core
             }
             else
             {
-                if (Strength[1] == 1)
+                Attacked[0] = true;
+                if (Str[1] == 1)
                 {
                     sM = -5;
                 }
-                else if (Strength[1] == 2 || Strength[1] == 3)
+                else if (Str[1] == 2 || Str[1] == 3)
                 {
                     sM = -4;
                 }
-                else if (Strength[1] == 4 || Strength[1] == 5)
+                else if (Str[1] == 4 || Str[1] == 5)
                 {
                     sM = -3;
                 }
-                else if (Strength[1] == 6 || Strength[1] == 7)
+                else if (Str[1] == 6 || Str[1] == 7)
                 {
                     sM = -2;
                 }
-                else if (Strength[1] == 8 || Strength[1] == 9)
+                else if (Str[1] == 8 || Str[1] == 9)
                 {
                     sM = -1;
                 }
-                else if (Strength[1] == 12 || Strength[1] == 13)
+                else if (Str[1] == 12 || Str[1] == 13)
                 {
                     sM = 1;
                 }
-                else if (Strength[1] == 14 || Strength[1] == 15)
+                else if (Str[1] == 14 || Str[1] == 15)
                 {
                     sM = 2;
                 }
-                else if (Strength[1] == 16 || Strength[1] == 17)
+                else if (Str[1] == 16 || Str[1] == 17)
                 {
                     sM = 3;
                 }
-                else if (Strength[1] == 18 || Strength[1] == 19)
+                else if (Str[1] == 18 || Str[1] == 19)
                 {
                     sM = 4;
                 }
-                else if (Strength[1] == 20)
+                else if (Str[1] == 20)
                 {
                     sM = 5;
                 }
                 
-                if (Dexterity[0] == 1)
+                if (Dex[0] == 1)
                 {
                     dM = -5;
                 }
-                else if (Dexterity[0] == 2 || Dexterity[0] == 3)
+                else if (Dex[0] == 2 || Dex[0] == 3)
                 {
                     dM = -4;
                 }
-                else if (Dexterity[0] == 4 || Dexterity[0] == 5)
+                else if (Dex[0] == 4 || Dex[0] == 5)
                 {
                     dM = -3;
                 }
-                else if (Dexterity[0] == 6 || Dexterity[0] == 7)
+                else if (Dex[0] == 6 || Dex[0] == 7)
                 {
                     dM = -2;
                 }
-                else if (Dexterity[0] == 8 || Dexterity[0] == 9)
+                else if (Dex[0] == 8 || Dex[0] == 9)
                 {
                     dM = -1;
                 }
-                else if (Dexterity[0] == 12 || Dexterity[0] == 13)
+                else if (Dex[0] == 12 || Dex[0] == 13)
                 {
                     dM = 1;
                 }
-                else if (Dexterity[0] == 14 || Dexterity[0] == 15)
+                else if (Dex[0] == 14 || Dex[0] == 15)
                 {
                     dM = 2;
                 }
-                else if (Dexterity[0] == 16 || Dexterity[0] == 17)
+                else if (Dex[0] == 16 || Dex[0] == 17)
                 {
                     dM = 3;
                 }
-                else if (Dexterity[0] == 18 || Dexterity[0] == 19)
+                else if (Dex[0] == 18 || Dex[0] == 19)
                 {
                     dM = 4;
                 }
-                else if (Dexterity[0] == 20)
+                else if (Dex[0] == 20)
                 {
                     dM = 5;
                 }
@@ -219,7 +223,7 @@ namespace Smelly.Code.Core
                     Chars[0].HitPoints = Chars[0].HitPoints - 1;
                 }
                 
-                if (Strength[1].HasValue)
+                if (Str[1].HasValue)
                 {
                     if (sM > 0 && roll + sM >= Chars[0].Armor)
                     {
@@ -235,7 +239,53 @@ namespace Smelly.Code.Core
 
         public bool IsDead(Character character)
         {
-            return character.HitPoints == 0;
+            var charIndex = Array.IndexOf(Chars, character);
+            var hitPoints = character.HitPoints;
+            var hM = 0;
+            if (Const[charIndex].HasValue)
+            {
+                if (Const[charIndex] == 1)
+                {
+                    hM = -5;
+                }
+                else if (Const[charIndex] == 2 || Const[charIndex] == 3)
+                {
+                    hM = -4;
+                }
+                else if (Const[charIndex] == 4 || Const[charIndex] == 5)
+                {
+                    hM = -3;
+                }
+                else if (Const[charIndex] == 6 || Const[charIndex] == 7)
+                {
+                    hM = -2;
+                }
+                else if (Const[charIndex] == 8 || Const[charIndex] == 9)
+                {
+                    hM = -1;
+                }
+                else if (Const[charIndex] == 12 || Const[charIndex] == 13)
+                {
+                    hM = 1;
+                }
+                else if (Const[charIndex] == 14 || Const[charIndex] == 15)
+                {
+                    hM = 2;
+                }
+                else if (Const[charIndex] == 16 || Const[charIndex] == 17)
+                {
+                    hM = 3;
+                }
+                else if (Const[charIndex] == 18 || Const[charIndex] == 19)
+                {
+                    hM = 4;
+                }
+                else if (Const[charIndex] == 20)
+                {
+                    hM = 5;
+                }
+            }
+            return hitPoints + hM <= 0 && Attacked[charIndex];
         }
 
         public void EquipArmor(ArmorType armorType, Character character)
@@ -254,13 +304,19 @@ namespace Smelly.Code.Core
         public void ApplyStrength(int strength, Character character)
         {
             var charIndex = Array.IndexOf(Chars, character);
-            Strength[charIndex] = strength;
+            Str[charIndex] = strength;
         }
 
         public void ApplyDexterity(int dexterity, Character character)
         {
             var charIndex = Array.IndexOf(Chars, character);
-            Dexterity[charIndex] = dexterity;
+            Dex[charIndex] = dexterity;
+        }
+
+        public void ApplyConstitution(int constitution, Character character)
+        {
+            var charIndex = Array.IndexOf(Chars, character);
+            Const[charIndex] = constitution;
         }
     }
 }

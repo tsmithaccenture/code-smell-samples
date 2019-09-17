@@ -25,7 +25,7 @@ namespace Smelly.Code.Core.Test
             var game = new EvercraftGame();
             game.Start();
 
-            game.Attack(11, game.Chars[0]);
+            game.Attack(11, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(4);
         }
@@ -36,7 +36,7 @@ namespace Smelly.Code.Core.Test
             var game = new EvercraftGame();
             game.Start();
 
-            game.Attack(10, game.Chars[0]);
+            game.Attack(10, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(4);
         }
@@ -47,7 +47,7 @@ namespace Smelly.Code.Core.Test
             var game = new EvercraftGame();
             game.Start();
 
-            game.Attack(9, game.Chars[0]);
+            game.Attack(9, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(5);
         }
@@ -58,7 +58,7 @@ namespace Smelly.Code.Core.Test
             var game = new EvercraftGame();
             game.Start();
 
-            game.Attack(20, game.Chars[0]);
+            game.Attack(20, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(3);
         }
@@ -68,12 +68,12 @@ namespace Smelly.Code.Core.Test
         {
             var game = new EvercraftGame();
             game.Start();
-            game.Attack(11, game.Chars[0]);
-            game.Attack(11, game.Chars[0]);
-            game.Attack(11, game.Chars[0]);
-            game.Attack(11, game.Chars[0]);
+            game.Attack(11, game.Chars[1]);
+            game.Attack(11, game.Chars[1]);
+            game.Attack(11, game.Chars[1]);
+            game.Attack(11, game.Chars[1]);
             
-            game.Attack(11, game.Chars[0]);
+            game.Attack(11, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(0);
             game.IsDead(game.Chars[1]).Should().Be(true);
@@ -128,7 +128,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyStrength(strength, game.Chars[0]);
 
-            game.Attack(9 - modifier, game.Chars[0]);
+            game.Attack(9 - modifier, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(4);
         }
@@ -149,7 +149,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyStrength(strength, game.Chars[0]);
 
-            game.Attack(10 - modifier, game.Chars[0]);
+            game.Attack(10 - modifier, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(3);
         }
@@ -170,7 +170,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyStrength(strength, game.Chars[0]);
             
-            game.Attack(10 - modifier, game.Chars[0]);
+            game.Attack(10 - modifier, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(4 - modifier);
         }
@@ -191,7 +191,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyStrength(strength, game.Chars[0]);
             
-            game.Attack(9 - modifier, game.Chars[0]);
+            game.Attack(9 - modifier, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(4);
         }
@@ -212,7 +212,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyDexterity(dexterity, game.Chars[1]);
             
-            game.Attack(10 + modifier, game.Chars[0]);
+            game.Attack(10 + modifier, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(4);
         }
@@ -233,7 +233,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyDexterity(dexterity, game.Chars[1]);
             
-            game.Attack(9 + modifier, game.Chars[0]);
+            game.Attack(9 + modifier, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(5);
         }
@@ -254,7 +254,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyDexterity(dexterity, game.Chars[1]);
             
-            game.Attack(10 + modifier, game.Chars[0]);
+            game.Attack(10 + modifier, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(4);
         }
@@ -275,18 +275,143 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyDexterity(dexterity, game.Chars[1]);
             
-            game.Attack(9 + modifier, game.Chars[0]);
+            game.Attack(9 + modifier, game.Chars[1]);
 
             game.Chars[1].HitPoints.Should().Be(5);
         }
 
+        [Fact]
+        public void GivenSecondCharacterHasConstitutionWithNegative_5_ThenCharacterIsNotDeadInitially()
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            game.ApplyConstitution(1, game.Chars[1]);
+
+            game.IsDead(game.Chars[1]).Should().Be(false);
+        }
+        
+        [Fact]
+        public void GivenSecondCharacterHasConstitutionWithNegative_5_ModifierWhenRollIsGreaterThanArmorThenSecondCharacterDies()
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            game.ApplyConstitution(1, game.Chars[1]);
+
+            game.Attack(10, game.Chars[1]);
+            
+            game.IsDead(game.Chars[1]).Should().Be(true);
+        }
+        
+        [Fact]
+        public void GivenFirstCharacterHasConstitutionWithNegative_5_ThenCharacterIsNotDeadInitially()
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            game.ApplyConstitution(1, game.Chars[0]);
+
+            game.IsDead(game.Chars[0]).Should().Be(false);
+        }
+        
+        [Theory]
+        [InlineData(1, 1)]
+        [InlineData(2, 1)]
+        [InlineData(3, 1)]
+        [InlineData(4, 2)]
+        [InlineData(5, 2)]
+        [InlineData(6, 3)]
+        [InlineData(7, 3)]
+        [InlineData(8, 4)]
+        [InlineData(9, 4)]
+        public void GivenFirstCharacterHasConstitutionWithNegativeModifierWhenRollIsGreaterThanArmorThenFirstCharacterDiesAfterAttacks(int constitution, int attacks)
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            game.ApplyConstitution(constitution, game.Chars[0]);
+
+            for (var i = 0; i < attacks; i++)
+            {
+                game.Attack(10, game.Chars[0]);
+            }
+
+            game.IsDead(game.Chars[0]).Should().Be(true);  
+        }
+        
+        [Theory]
+        [InlineData(4, 1)]
+        [InlineData(5, 1)]
+        [InlineData(6, 2)]
+        [InlineData(7, 2)]
+        [InlineData(8, 3)]
+        [InlineData(9, 3)]
+        public void GivenFirstCharacterHasConstitutionWithNegativeModifierWhenRollIsGreaterThanArmorThenFirstCharacterIsAliveAfterAttacks(int constitution, int attacks)
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            game.ApplyConstitution(constitution, game.Chars[0]);
+
+            for (var i = 0; i < attacks; i++)
+            {
+                game.Attack(10, game.Chars[0]);
+            }
+
+            game.IsDead(game.Chars[0]).Should().Be(false);
+        }
+
+        [Theory]
+        [InlineData(12, 6)]
+        [InlineData(13, 6)]
+        [InlineData(14, 7)]
+        [InlineData(15, 7)]
+        [InlineData(16, 8)]
+        [InlineData(17, 8)]
+        [InlineData(18, 9)]
+        [InlineData(19, 9)]
+        [InlineData(20, 10)]
+        public void GivenFirstCharacterHasConstitutionWithPositiveModifierWhenRollIsGreaterThanArmorThenFirstCharacterDiesAfterAttacks(int constitution, int attacks)
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            game.ApplyConstitution(constitution, game.Chars[0]);
+
+            for (var i = 0; i < attacks; i++)
+            {
+                game.Attack(10, game.Chars[0]);
+            }
+
+            game.IsDead(game.Chars[0]).Should().Be(true);
+        }
+        
+        [Theory]
+        [InlineData(12, 5)]
+        [InlineData(13, 5)]
+        [InlineData(14, 6)]
+        [InlineData(15, 6)]
+        [InlineData(16, 7)]
+        [InlineData(17, 7)]
+        [InlineData(18, 8)]
+        [InlineData(19, 8)]
+        [InlineData(20, 9)]
+        public void GivenFirstCharacterHasConstitutionWithPositiveModifierWhenRollIsGreaterThanArmorThenFirstCharacterIsAliveAfterAttacks(int constitution, int attacks)
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            game.ApplyConstitution(constitution, game.Chars[0]);
+
+            for (var i = 0; i < attacks; i++)
+            {
+                game.Attack(10, game.Chars[0]);
+            }
+
+            game.IsDead(game.Chars[0]).Should().Be(false);
+        }
+        
         [Fact]
         public void GivenGameHasStartedWhenSecondCharacterAttacksTheFirstThenFirstCharacterTakesDamage()
         {
             var game = new EvercraftGame();
             game.Start();
             
-            game.Attack(10, game.Chars[1]);
+            game.Attack(10, game.Chars[0]);
 
             game.Chars[0].HitPoints.Should().Be(4);
         }
@@ -307,7 +432,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyStrength(strength, game.Chars[1]);
 
-            game.Attack(9 - modifier, game.Chars[1]);
+            game.Attack(9 - modifier, game.Chars[0]);
 
             game.Chars[0].HitPoints.Should().Be(4);
         }
@@ -328,7 +453,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyStrength(strength, game.Chars[1]);
 
-            game.Attack(10 - modifier, game.Chars[1]);
+            game.Attack(10 - modifier, game.Chars[0]);
 
             game.Chars[0].HitPoints.Should().Be(3);
         }
@@ -349,7 +474,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyStrength(strength, game.Chars[1]);
             
-            game.Attack(10 - modifier, game.Chars[1]);
+            game.Attack(10 - modifier, game.Chars[0]);
 
             game.Chars[0].HitPoints.Should().Be(4 - modifier);
         }
@@ -370,7 +495,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyStrength(strength, game.Chars[1]);
             
-            game.Attack(9 - modifier, game.Chars[1]);
+            game.Attack(9 - modifier, game.Chars[0]);
 
             game.Chars[0].HitPoints.Should().Be(4);
         }
@@ -391,7 +516,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyDexterity(dexterity, game.Chars[0]);
             
-            game.Attack(10 + modifier, game.Chars[1]);
+            game.Attack(10 + modifier, game.Chars[0]);
 
             game.Chars[0].HitPoints.Should().Be(4);
         }
@@ -412,7 +537,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyDexterity(dexterity, game.Chars[0]);
             
-            game.Attack(9 + modifier, game.Chars[1]);
+            game.Attack(9 + modifier, game.Chars[0]);
 
             game.Chars[0].HitPoints.Should().Be(5);
         }
@@ -433,7 +558,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyDexterity(dexterity, game.Chars[0]);
             
-            game.Attack(10 + modifier, game.Chars[1]);
+            game.Attack(10 + modifier, game.Chars[0]);
 
             game.Chars[0].HitPoints.Should().Be(4);
         }
@@ -454,7 +579,7 @@ namespace Smelly.Code.Core.Test
             game.Start();
             game.ApplyDexterity(dexterity, game.Chars[0]);
             
-            game.Attack(9 + modifier, game.Chars[1]);
+            game.Attack(9 + modifier, game.Chars[0]);
 
             game.Chars[0].HitPoints.Should().Be(5);
         }
