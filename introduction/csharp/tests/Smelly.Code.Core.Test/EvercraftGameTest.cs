@@ -174,5 +174,26 @@ namespace Smelly.Code.Core.Test
 
             game.Characters[1].HitPoints.Should().Be(4 - modifier);
         }
+
+        [Theory]
+        [InlineData(12, 1)]
+        [InlineData(13, 1)]
+        [InlineData(14, 2)]
+        [InlineData(15, 2)]
+        [InlineData(16, 3)]
+        [InlineData(17, 3)]
+        [InlineData(18, 4)]
+        [InlineData(19, 4)]
+        [InlineData(20, 5)]
+        public void GivenCharacterHasStrengthWithPositiveModifierWhenRollIsModifiedToBeLessThanArmorThenCharacterTakesOneDamage(int strength, int modifier)
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            game.ApplyStrength(strength, game.Characters[0]);
+            
+            game.Roll(9 - modifier);
+
+            game.Characters[1].HitPoints.Should().Be(4);
+        }
     }
 }

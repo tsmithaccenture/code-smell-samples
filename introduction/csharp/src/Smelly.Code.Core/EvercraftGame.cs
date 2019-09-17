@@ -25,7 +25,7 @@ namespace Smelly.Code.Core
 
             if (StrengthModifiers[0].HasValue)
             {
-                if (StrengthModifiers[0].GetValueOrDefault() > 0)
+                if (StrengthModifiers[0].GetValueOrDefault() > 0 && roll + StrengthModifiers[0].GetValueOrDefault() >= Characters[1].Armor)
                 {
                     Characters[1].HitPoints -= StrengthModifiers[0].GetValueOrDefault();
                 }
@@ -33,7 +33,6 @@ namespace Smelly.Code.Core
                 {
                     Characters[1].HitPoints--;    
                 }
-                
             }
             
 
