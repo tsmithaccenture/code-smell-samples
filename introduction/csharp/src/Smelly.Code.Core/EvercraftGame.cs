@@ -4,7 +4,8 @@ namespace Smelly.Code.Core
 {
     public class EvercraftGame
     {
-        private int?[] StrengthModifiers { get; } = {null, null};
+        private int?[] Strength { get; } = {null, null};
+        private int?[] Dexterity { get; } = {null, null};
         public Character[] Characters { get; set; }
 
         public void Start()
@@ -18,27 +19,112 @@ namespace Smelly.Code.Core
 
         public void Roll(int roll)
         {
-            if (roll + StrengthModifiers[0].GetValueOrDefault() >= Characters[1].Armor)
+            var strengthModifier = 0;
+            var dexterityModifier = 0;
+            
+            if (Strength[0] == 1)
             {
-                Characters[1].HitPoints--;    
+                strengthModifier = -5;
+            } 
+            else if (Strength[0] == 2 || Strength[0] == 3)
+            {
+                strengthModifier = -4;    
+            }
+            else if (Strength[0] == 4 || Strength[0] == 5)
+            {
+                strengthModifier = -3;
+            }
+            else if (Strength[0] == 6 || Strength[0] == 7)
+            {
+                strengthModifier = -2;
+            }
+            else if (Strength[0] == 8 || Strength[0] == 9)
+            {
+                strengthModifier = -1;
+            }
+            else if (Strength[0] == 12 || Strength[0] == 13)
+            {
+                strengthModifier = 1;
+            }
+            else if (Strength[0] == 14 || Strength[0] == 15)
+            {
+                strengthModifier = 2;
+            }
+            else if (Strength[0] == 16 || Strength[0] == 17)
+            {
+                strengthModifier = 3;
+            }
+            else if (Strength[0] == 18 || Strength[0] == 19)
+            {
+                strengthModifier = 4;
+            }
+            else if (Strength[0] == 20)
+            {
+                strengthModifier = 5;
             }
 
-            if (StrengthModifiers[0].HasValue)
+            if (Dexterity[0] == 1)
             {
-                if (StrengthModifiers[0].GetValueOrDefault() > 0 && roll + StrengthModifiers[0].GetValueOrDefault() >= Characters[1].Armor)
+                dexterityModifier = -5;
+            } 
+            else if (Dexterity[0] == 2 || Dexterity[0] == 3)
+            {
+                dexterityModifier = -4;    
+            }
+            else if (Dexterity[0] == 4 || Dexterity[0] == 5)
+            {
+                dexterityModifier = -3;
+            }
+            else if (Dexterity[0] == 6 || Dexterity[0] == 7)
+            {
+                dexterityModifier = -2;
+            }
+            else if (Dexterity[0] == 8 || Dexterity[0] == 9)
+            {
+                dexterityModifier = -1;
+            }
+            else if (Dexterity[0] == 12 || Dexterity[0] == 13)
+            {
+                dexterityModifier = 1;
+            }
+            else if (Dexterity[0] == 14 || Dexterity[0] == 15)
+            {
+                dexterityModifier = 2;
+            }
+            else if (Dexterity[0] == 16 || Dexterity[0] == 17)
+            {
+                dexterityModifier = 3;
+            }
+            else if (Dexterity[0] == 18 || Dexterity[0] == 19)
+            {
+                dexterityModifier = 4;
+            }
+            else if (Dexterity[0] == 20)
+            {
+                dexterityModifier = 5;
+            }
+            
+            if (roll + strengthModifier >= Characters[1].Armor + dexterityModifier)
+            {
+                Characters[1].HitPoints = Characters[1].HitPoints - 1;    
+            }
+
+            if (Strength[0].HasValue)
+            {
+                if (strengthModifier > 0 && roll + strengthModifier >= Characters[1].Armor)
                 {
-                    Characters[1].HitPoints -= StrengthModifiers[0].GetValueOrDefault();
+                    Characters[1].HitPoints = Characters[1].HitPoints - strengthModifier;
                 }
                 else
                 {
-                    Characters[1].HitPoints--;    
+                    Characters[1].HitPoints = Characters[1].HitPoints - 1;
                 }
             }
             
 
             if (roll == 20)
             {
-                Characters[1].HitPoints--;
+                Characters[1].HitPoints = Characters[1].HitPoints - 1;
             }
         }
 
@@ -52,56 +138,22 @@ namespace Smelly.Code.Core
             switch (armorType)
             {
                 case ArmorType.Bronze:
-                    character.Armor--;
+                    character.Armor = character.Armor - 1;
                     break;
                 case ArmorType.Steel:
-                    character.Armor++;
+                    character.Armor = character.Armor + 1;
                     break;
             }
         }
 
         public void ApplyStrength(int strength, Character character)
         {
-            if (strength == 1)
-            {
-                StrengthModifiers[0] = -5;
-            } 
-            else if (strength == 2 || strength == 3)
-            {
-                StrengthModifiers[0] = -4;    
-            }
-            else if (strength == 4 || strength == 5)
-            {
-                StrengthModifiers[0] = -3;
-            }
-            else if (strength == 6 || strength == 7)
-            {
-                StrengthModifiers[0] = -2;
-            }
-            else if (strength == 8 || strength == 9)
-            {
-                StrengthModifiers[0] = -1;
-            }
-            else if (strength == 12 || strength == 13)
-            {
-                StrengthModifiers[0] = 1;
-            }
-            else if (strength == 14 || strength == 15)
-            {
-                StrengthModifiers[0] = 2;
-            }
-            else if (strength == 16 || strength == 17)
-            {
-                StrengthModifiers[0] = 3;
-            }
-            else if (strength == 18 || strength == 19)
-            {
-                StrengthModifiers[0] = 4;
-            }
-            else if (strength == 20)
-            {
-                StrengthModifiers[0] = 5;
-            }
+            Strength[0] = strength;
+        }
+
+        public void ApplyDexterity(int dexterity, Character character)
+        {
+            Dexterity[0] = dexterity;
         }
     }
 }

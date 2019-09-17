@@ -195,5 +195,91 @@ namespace Smelly.Code.Core.Test
 
             game.Characters[1].HitPoints.Should().Be(4);
         }
+
+        [Theory]
+        [InlineData(1, -5)]
+        [InlineData(2, -4)]
+        [InlineData(3, -4)]
+        [InlineData(4, -3)]
+        [InlineData(5, -3)]
+        [InlineData(6, -2)]
+        [InlineData(7, -2)]
+        [InlineData(8, -1)]
+        [InlineData(9, -1)]
+        public void GivenCharacterHasDexterityWithNegativeModifierWhenRollIsGreaterThanModifiedArmorThenCharacterTakesDamage(int dexterity, int modifier)
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            game.ApplyDexterity(dexterity, game.Characters[0]);
+            
+            game.Roll(10 + modifier);
+
+            game.Characters[1].HitPoints.Should().Be(4);
+        }
+        
+        [Theory]
+        [InlineData(1, -5)]
+        [InlineData(2, -4)]
+        [InlineData(3, -4)]
+        [InlineData(4, -3)]
+        [InlineData(5, -3)]
+        [InlineData(6, -2)]
+        [InlineData(7, -2)]
+        [InlineData(8, -1)]
+        [InlineData(9, -1)]
+        public void GivenCharacterHasDexterityWithNegativeModifierWhenRollIsLessThanModifiedArmorThenCharacterDoesNotTakeDamage(int dexterity, int modifier)
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            game.ApplyDexterity(dexterity, game.Characters[0]);
+            
+            game.Roll(9 + modifier);
+
+            game.Characters[1].HitPoints.Should().Be(5);
+        }
+
+        [Theory]
+        [InlineData(12, 1)]
+        [InlineData(13, 1)]
+        [InlineData(14, 2)]
+        [InlineData(15, 2)]
+        [InlineData(16, 3)]
+        [InlineData(17, 3)]
+        [InlineData(18, 4)]
+        [InlineData(19, 4)]
+        [InlineData(20, 5)]
+        public void GivenCharacterHasDexterityWithPositiveModifierWhenRollIsGreaterThanModifiedArmorThenCharacterTakesDamage(int dexterity, int modifier)
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            game.ApplyDexterity(dexterity, game.Characters[0]);
+            
+            game.Roll(10 + modifier);
+
+            game.Characters[1].HitPoints.Should().Be(4);
+        }
+        
+        [Theory]
+        [InlineData(12, 1)]
+        [InlineData(13, 1)]
+        [InlineData(14, 2)]
+        [InlineData(15, 2)]
+        [InlineData(16, 3)]
+        [InlineData(17, 3)]
+        [InlineData(18, 4)]
+        [InlineData(19, 4)]
+        [InlineData(20, 5)]
+        public void GivenCharacterHasDexterityWithPositiveModifierWhenRollIsLessThanModifiedArmorThenCharacterTakesNoDamage(int dexterity, int modifier)
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            game.ApplyDexterity(dexterity, game.Characters[0]);
+            
+            game.Roll(9 + modifier);
+
+            game.Characters[1].HitPoints.Should().Be(5);
+        }
+        
+        
     }
 }
