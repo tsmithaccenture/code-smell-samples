@@ -25,6 +25,7 @@ namespace Mysterious.Name.Samples
             var enumerator = _list.GetEnumerator();
             var result = $"Rental Record for {Name}\n";
 
+            // determines the amount for each line
             while (enumerator.MoveNext())
             {
                 var thisAmount = 0d;
