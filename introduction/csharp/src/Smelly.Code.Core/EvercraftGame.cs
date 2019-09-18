@@ -1,14 +1,18 @@
 using System;
+using System.IO;
+using System.Linq;
+using Microsoft.Data.Sqlite;
+using Newtonsoft.Json.Linq;
 
 namespace Smelly.Code.Core
 {
     public class EvercraftGame
     {
-        private int?[] Str { get; } = {null, null};
-        private int?[] Dex { get; } = {null, null};
+        public int?[] Str { get; } = {null, null};
+        public int?[] Dex { get; } = {null, null};
         public int?[] Const { get; } = {null, null};
         public bool[] Attacked { get; } = {false, false};
-        public Character[] Chars { get; set; }
+        public Character[] Chars { get; set; } = {null, null};
 
         public void Start()
         {
@@ -288,7 +292,7 @@ namespace Smelly.Code.Core
             return hitPoints + hM <= 0 && Attacked[charIndex];
         }
 
-        public void EquipArmor(ArmorType armorType, Character character)
+        public void EquipArmor(ArmorType armorType, int weight, Character character)
         {
             switch (armorType)
             {
@@ -298,6 +302,11 @@ namespace Smelly.Code.Core
                 case ArmorType.Steel:
                     character.Armor = character.Armor + 1;
                     break;
+            }
+
+            if (weight > 50)
+            {
+                character.Armor = character.Armor + 2;
             }
         }
 
@@ -317,6 +326,60 @@ namespace Smelly.Code.Core
         {
             var charIndex = Array.IndexOf(Chars, character);
             Const[charIndex] = constitution;
+        }
+
+        public void Load(string filePath)
+        {
+            if (filePath.EndsWith(".json"))
+            {
+                var jObject = JObject.Parse(File.ReadAllText(filePath));
+                var characters = jObject.Value<JArray>("characters");
+                for (var i = 0; i < characters.Count; i++)
+                {
+                    Chars[i] = new Character(5, characters[i].Value<int>("arm"));
+                    Str[i] = characters[i].Value<int>("str");
+                    Dex[i] = characters[i].Value<int>("dex");
+                    Const[i] = characters[i].Value<int>("const");
+                }
+            }
+            else if (filePath.EndsWith(".db"))
+            {
+                using (var connection = new SqliteConnection($"Data Source={filePath}"))
+                {
+                    connection.Open();
+                    
+                    var selectCharactersText = "select [Name], Armor, Str, Dex, Const from [Characters]";
+                    using (var command = new SqliteCommand(selectCharactersText, connection))
+                    {
+                        using (var reader = command.ExecuteReader())
+                        {
+                            var current = 0;
+                            while (reader.Read())
+                            {
+                                Chars[current] = new Character(5, reader.GetFieldValue<int>(1));
+                                Str[current] = reader.GetFieldValue<int>(2);
+                                Dex[current] = reader.GetFieldValue<int>(3);
+                                Const[current] = reader.GetFieldValue<int>(4);
+                                current = current + 1;
+                            }
+                        }    
+                    }
+                }
+            }
+            else
+            {
+                var lines = File.ReadAllLines(filePath)
+                    .Skip(1)
+                    .ToArray();
+                for (var i = 0; i < lines.Length; i++)
+                {
+                    var vs = lines[i].Split(',');
+                    Chars[i] = new Character(5, int.Parse(vs[1]));
+                    Str[i] = int.Parse(vs[2]);
+                    Dex[i] = int.Parse(vs[3]);
+                    Const[i] = int.Parse(vs[4]);
+                }
+            }
         }
     }
 }

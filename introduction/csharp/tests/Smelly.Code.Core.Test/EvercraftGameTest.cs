@@ -1,10 +1,17 @@
+using System;
+using System.IO;
 using FluentAssertions;
+using Microsoft.Data.Sqlite;
 using Xunit;
 
 namespace Smelly.Code.Core.Test
 {
-    public class EvercraftGameTest
+    public class EvercraftGameTest : IDisposable
     {
+        private readonly string _filePath = Path.Combine(Directory.GetCurrentDirectory(), "characters.csv");
+        private readonly string _otherFilePath = Path.Combine(Directory.GetCurrentDirectory(), "characters.json");
+        private readonly string _otherOtherFilePath = Path.Combine(Directory.GetCurrentDirectory(), "evercraft.db");
+        
         [Fact]
         public void GivenGameIsNotStartedWhenStartNewGameThenDefaultCharactersAreCreated()
         {
@@ -85,7 +92,7 @@ namespace Smelly.Code.Core.Test
             var game = new EvercraftGame();
             game.Start();
 
-            game.EquipArmor(ArmorType.Bronze, game.Chars[1]);
+            game.EquipArmor(ArmorType.Bronze, 50, game.Chars[1]);
 
             game.Chars[1].Armor.Should().Be(9);
         }
@@ -96,7 +103,7 @@ namespace Smelly.Code.Core.Test
             var game = new EvercraftGame();
             game.Start();
 
-            game.EquipArmor(ArmorType.Steel, game.Chars[1]);
+            game.EquipArmor(ArmorType.Steel, 50, game.Chars[1]);
 
             game.Chars[1].Armor.Should().Be(11);
         }
@@ -107,11 +114,22 @@ namespace Smelly.Code.Core.Test
             var game = new EvercraftGame();
             game.Start();
 
-            game.EquipArmor(ArmorType.Iron, game.Chars[1]);
+            game.EquipArmor(ArmorType.Iron, 50, game.Chars[1]);
 
             game.Chars[1].Armor.Should().Be(10);
         }
 
+        [Fact]
+        public void GivenGameHasStartedWhenCharacterEquipsHeavyArmorThenCharactersArmorIsIncreasedByTwo()
+        {
+            var game = new EvercraftGame();
+            game.Start();
+            
+            game.EquipArmor(ArmorType.Iron, 51, game.Chars[0]);
+
+            game.Chars[0].Armor.Should().Be(12);
+        }
+        
         [Theory]
         [InlineData(1, -5)]
         [InlineData(2, -4)]
@@ -582,6 +600,101 @@ namespace Smelly.Code.Core.Test
             game.Attack(9 + modifier, game.Chars[0]);
 
             game.Chars[0].HitPoints.Should().Be(5);
+        }
+
+        [Fact]
+        public void GivenGameWhenLoadFromCsvThenCharactersAreLoadedFromFile()
+        {
+            File.WriteAllText(_filePath, "Character,Armor,Strength,Dexterity,Constitution\n" +
+                                        "Jack,12,13,14,15\n" +
+                                        "Bob,13,14,15,16\n");
+            
+            var game = new EvercraftGame();
+
+            game.Load(_filePath);
+
+            game.Chars[0].Armor.Should().Be(12);
+            game.Str[0].Should().Be(13);
+            game.Dex[0].Should().Be(14);
+            game.Const[0].Should().Be(15);
+            
+            game.Chars[1].Armor.Should().Be(13);
+            game.Str[1].Should().Be(14);
+            game.Dex[1].Should().Be(15);
+            game.Const[1].Should().Be(16);
+        }
+
+        [Fact]
+        public void GivenGameWhenLoadFromJsonThenCharactersAreLoadedFromJsonFile()
+        {
+            var json = "{" +
+                         "'characters': [" +
+                            "{ 'name': 'bob', 'arm': 13, 'str': 14, 'dex': 15, 'const': 16 }," +
+                            "{ 'name': 'jack', 'arm': 2, 'str': 3, 'dex': 4, 'const': 5 }," +
+                         "]" +
+                       "}";
+            File.WriteAllText(_otherFilePath, json);
+            
+            var game = new EvercraftGame();
+
+            game.Load(_otherFilePath);
+
+            game.Chars[0].Armor.Should().Be(13);
+            game.Str[0].Should().Be(14);
+            game.Dex[0].Should().Be(15);
+            game.Const[0].Should().Be(16);
+            
+            game.Chars[1].Armor.Should().Be(2);
+            game.Str[1].Should().Be(3);
+            game.Dex[1].Should().Be(4);
+            game.Const[1].Should().Be(5);
+        }
+
+        [Fact]
+        public void GivenGameWhenLoadFromDatabaseThenCharactersAreLoadedFromDatabase()
+        {
+            using (var connection = new SqliteConnection($"Data Source={_otherOtherFilePath}"))
+            {
+                connection.Open();
+                
+                var createTableCommandText = "create table [Characters](Id integer primary key asc, Name Text, Armor integer, Str integer, Dex integer, Const integer)";
+                using (var createTableCommand = new SqliteCommand(createTableCommandText, connection))
+                {
+                    createTableCommand.ExecuteNonQueryAsync();
+                }
+
+                var insertRowsCommandText = "insert into [Characters] (Name, Armor, Str, Dex, Const) values ('John', 9, 8, 7, 6);\n" +
+                    "insert into [Characters] (Name, Armor, Str, Dex, Const) values ('Jim', 20, 20, 20, 20);\n";
+                using (var insertRowsCommand = new SqliteCommand(insertRowsCommandText, connection))
+                {
+                    insertRowsCommand.ExecuteNonQueryAsync();
+                }
+            }
+            var game = new EvercraftGame();
+
+            game.Load(_otherOtherFilePath);
+            
+            game.Chars[0].Armor.Should().Be(9);
+            game.Str[0].Should().Be(8);
+            game.Dex[0].Should().Be(7);
+            game.Const[0].Should().Be(6);
+            
+            game.Chars[1].Armor.Should().Be(20);
+            game.Str[1].Should().Be(20);
+            game.Dex[1].Should().Be(20);
+            game.Const[1].Should().Be(20);
+        }
+
+        public void Dispose()
+        {
+            if (File.Exists(_filePath))
+                File.Delete(_filePath);
+
+            if (File.Exists(_otherFilePath))
+                File.Delete(_otherFilePath);
+
+            if (File.Exists(_otherOtherFilePath))
+                File.Delete(_otherOtherFilePath);
         }
     }
 }
