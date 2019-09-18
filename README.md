@@ -1,13 +1,12 @@
-# The Evercraft Kata   
+# The Evercraft Smells Kata   
 
-In this exercise, you will build out a simple web-based RPG called Evercraft for the company Blizzards of the Coast.  Leverage acceptance test driven development, in addition to all the other practices we've learned, to build this game.
-
-This will be a simple web app that just uses HTML and submit buttons. 
+In this kata you will be finding and fixing code smells in a game called Evercraft. 
 
 ## Setup
-To drive the browser with Selenium install:
 
-```brew tap homebrew/cask && brew cask install chromedriver```
+This kata is in C#. You will need to install the .NET Core SDK
+
+- [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core/2.2)
 
 ## Running Cucumber
 
