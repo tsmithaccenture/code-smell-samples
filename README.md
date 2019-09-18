@@ -8,9 +8,15 @@ This kata is in C#. You will need to install the .NET Core SDK
 
 - [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core/2.2)
 
-## Running Cucumber
+## Running Tests
 
-Run cucumber tests using `gradle cucumber` from the command line or in the Gradle menu of IntelliJ.
+You can use the command line or an IDE to run tests.
+
+### Command line
+
+```bash
+dotnet test
+```
 
 ## Requirements
 

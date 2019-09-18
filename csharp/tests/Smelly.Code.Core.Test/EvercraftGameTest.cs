@@ -17,64 +17,74 @@ namespace Smelly.Code.Core.Test
         {
             var game = new EvercraftGame();
             
-            game.Start();
+            game.Start("Someone", "Other");
 
             game.Chars.Should().HaveCount(2);
-            game.Chars[0].HitPoints.Should().Be(5);
-            game.Chars[0].Armor.Should().Be(10);
-            game.Chars[1].HitPoints.Should().Be(5);
-            game.Chars[1].Armor.Should().Be(10);
+
+            game.Chars[0].Name.Should().Be("Someone");
+            game.Chars[0].HitPts.Should().Be(5);
+            game.Chars[0].Arm.Should().Be(10);
+            game.Chars[0].Str.Should().Be(null);
+            game.Chars[0].Dex.Should().Be(null);
+            game.Chars[0].Const.Should().Be(null);
+
+            game.Chars[1].Name.Should().Be("Other");
+            game.Chars[1].HitPts.Should().Be(5);
+            game.Chars[1].Arm.Should().Be(10);
+            game.Chars[1].Str.Should().Be(null);
+            game.Chars[1].Dex.Should().Be(null);
+            game.Chars[1].Const.Should().Be(null);
         }
 
         [Fact]
         public void GivenGameHasStartedWhenRollIsGreaterThanArmorThenCharacterTakesDamage()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
 
             game.Attack(11, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(4);
+            game.Chars[1].HitPts.Should().Be(4);
         }
 
         [Fact]
         public void GivenGameHasStartedWhenRollIsEqualToArmorThenCharacterTakesDamage()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
 
             game.Attack(10, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(4);
+            game.Chars[1].HitPts.Should().Be(4);
         }
 
         [Fact]
         public void GivenGameHasStartedWhenRollIsLessThanArmorThenNoDamageIsDealt()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
 
             game.Attack(9, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(5);
+            game.Chars[1].HitPts.Should().Be(5);
         }
 
         [Fact]
         public void GivenGameHasStartedWhenRollIsACriticalHitThenCharacterTakesDoubleDamage()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
 
             game.Attack(20, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(3);
+            game.Chars[1].HitPts.Should().Be(3);
         }
 
         [Fact]
         public void GivenCharacterHasOneHitPointLeftWhenRollIsGreaterThanArmorThenCharacterIsDead()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.Attack(11, game.Chars[1]);
             game.Attack(11, game.Chars[1]);
             game.Attack(11, game.Chars[1]);
@@ -82,7 +92,7 @@ namespace Smelly.Code.Core.Test
             
             game.Attack(11, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(0);
+            game.Chars[1].HitPts.Should().Be(0);
             game.IsDead(game.Chars[1]).Should().Be(true);
         }
 
@@ -90,44 +100,44 @@ namespace Smelly.Code.Core.Test
         public void GivenGameHasStartedWhenCharacterEquipsBronzeArmorThenCharactersArmorIsDecreasedByOne()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
 
             game.EquipArmor(ArmorType.Bronze, 50, game.Chars[1]);
 
-            game.Chars[1].Armor.Should().Be(9);
+            game.Chars[1].Arm.Should().Be(9);
         }
 
         [Fact]
         public void GivenGameHasStartedWhenCharacterEquipsSteelArmorThenCharactersArmorIsIncreasedByOne()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
 
             game.EquipArmor(ArmorType.Steel, 50, game.Chars[1]);
 
-            game.Chars[1].Armor.Should().Be(11);
+            game.Chars[1].Arm.Should().Be(11);
         }
 
         [Fact]
         public void GivenGameHasStartedWhenCharacterEquipsIronArmorThenCharactersArmorIsUnchanged()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
 
             game.EquipArmor(ArmorType.Iron, 50, game.Chars[1]);
 
-            game.Chars[1].Armor.Should().Be(10);
+            game.Chars[1].Arm.Should().Be(10);
         }
 
         [Fact]
         public void GivenGameHasStartedWhenCharacterEquipsHeavyArmorThenCharactersArmorIsIncreasedByTwo()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             
             game.EquipArmor(ArmorType.Iron, 51, game.Chars[0]);
 
-            game.Chars[0].Armor.Should().Be(12);
+            game.Chars[0].Arm.Should().Be(12);
         }
         
         [Theory]
@@ -143,12 +153,12 @@ namespace Smelly.Code.Core.Test
         public void GivenCharacterHasStrengthWithNegativeModifierWhenRollIsModifiedToBeLessThanArmorThenCharacterTakesOneDamage(int strength, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyStrength(strength, game.Chars[0]);
 
             game.Attack(9 - modifier, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(4);
+            game.Chars[1].HitPts.Should().Be(4);
         }
 
         [Theory]
@@ -164,12 +174,12 @@ namespace Smelly.Code.Core.Test
         public void GivenCharacterHasStrengthWithNegativeModifierWhenRollIsModifiedToBeGreaterThanArmorThenCharacterTakesTwoDamage(int strength, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyStrength(strength, game.Chars[0]);
 
             game.Attack(10 - modifier, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(3);
+            game.Chars[1].HitPts.Should().Be(3);
         }
 
         [Theory]
@@ -185,12 +195,12 @@ namespace Smelly.Code.Core.Test
         public void GivenCharacterHasStrengthWithPositiveModifierWhenRollIsModifiedToBeGreaterThanArmorThenCharacterTakesModifierDamage(int strength, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyStrength(strength, game.Chars[0]);
             
             game.Attack(10 - modifier, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(4 - modifier);
+            game.Chars[1].HitPts.Should().Be(4 - modifier);
         }
 
         [Theory]
@@ -206,12 +216,12 @@ namespace Smelly.Code.Core.Test
         public void GivenCharacterHasStrengthWithPositiveModifierWhenRollIsModifiedToBeLessThanArmorThenCharacterTakesOneDamage(int strength, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyStrength(strength, game.Chars[0]);
             
             game.Attack(9 - modifier, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(4);
+            game.Chars[1].HitPts.Should().Be(4);
         }
 
         [Theory]
@@ -227,12 +237,12 @@ namespace Smelly.Code.Core.Test
         public void GivenSecondCharacterHasDexterityWithNegativeModifierWhenRollIsGreaterThanModifiedArmorThenSecondCharacterTakesDamage(int dexterity, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyDexterity(dexterity, game.Chars[1]);
             
             game.Attack(10 + modifier, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(4);
+            game.Chars[1].HitPts.Should().Be(4);
         }
         
         [Theory]
@@ -248,12 +258,12 @@ namespace Smelly.Code.Core.Test
         public void GivenSecondCharacterHasDexterityWithNegativeModifierWhenRollIsLessThanModifiedArmorThenSecondCharacterDoesNotTakeDamage(int dexterity, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyDexterity(dexterity, game.Chars[1]);
             
             game.Attack(9 + modifier, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(5);
+            game.Chars[1].HitPts.Should().Be(5);
         }
 
         [Theory]
@@ -269,12 +279,12 @@ namespace Smelly.Code.Core.Test
         public void GivenSecondCharacterHasDexterityWithPositiveModifierWhenRollIsGreaterThanModifiedArmorThenSecondCharacterTakesDamage(int dexterity, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyDexterity(dexterity, game.Chars[1]);
             
             game.Attack(10 + modifier, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(4);
+            game.Chars[1].HitPts.Should().Be(4);
         }
         
         [Theory]
@@ -290,19 +300,19 @@ namespace Smelly.Code.Core.Test
         public void GivenSecondCharacterHasDexterityWithPositiveModifierWhenRollIsLessThanModifiedArmorThenSecondCharacterTakesNoDamage(int dexterity, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyDexterity(dexterity, game.Chars[1]);
             
             game.Attack(9 + modifier, game.Chars[1]);
 
-            game.Chars[1].HitPoints.Should().Be(5);
+            game.Chars[1].HitPts.Should().Be(5);
         }
 
         [Fact]
         public void GivenSecondCharacterHasConstitutionWithNegative_5_ThenCharacterIsNotDeadInitially()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyConstitution(1, game.Chars[1]);
 
             game.IsDead(game.Chars[1]).Should().Be(false);
@@ -312,7 +322,7 @@ namespace Smelly.Code.Core.Test
         public void GivenSecondCharacterHasConstitutionWithNegative_5_ModifierWhenRollIsGreaterThanArmorThenSecondCharacterDies()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyConstitution(1, game.Chars[1]);
 
             game.Attack(10, game.Chars[1]);
@@ -324,7 +334,7 @@ namespace Smelly.Code.Core.Test
         public void GivenFirstCharacterHasConstitutionWithNegative_5_ThenCharacterIsNotDeadInitially()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyConstitution(1, game.Chars[0]);
 
             game.IsDead(game.Chars[0]).Should().Be(false);
@@ -343,7 +353,7 @@ namespace Smelly.Code.Core.Test
         public void GivenFirstCharacterHasConstitutionWithNegativeModifierWhenRollIsGreaterThanArmorThenFirstCharacterDiesAfterAttacks(int constitution, int attacks)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyConstitution(constitution, game.Chars[0]);
 
             for (var i = 0; i < attacks; i++)
@@ -364,7 +374,7 @@ namespace Smelly.Code.Core.Test
         public void GivenFirstCharacterHasConstitutionWithNegativeModifierWhenRollIsGreaterThanArmorThenFirstCharacterIsAliveAfterAttacks(int constitution, int attacks)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyConstitution(constitution, game.Chars[0]);
 
             for (var i = 0; i < attacks; i++)
@@ -388,7 +398,7 @@ namespace Smelly.Code.Core.Test
         public void GivenFirstCharacterHasConstitutionWithPositiveModifierWhenRollIsGreaterThanArmorThenFirstCharacterDiesAfterAttacks(int constitution, int attacks)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyConstitution(constitution, game.Chars[0]);
 
             for (var i = 0; i < attacks; i++)
@@ -412,7 +422,7 @@ namespace Smelly.Code.Core.Test
         public void GivenFirstCharacterHasConstitutionWithPositiveModifierWhenRollIsGreaterThanArmorThenFirstCharacterIsAliveAfterAttacks(int constitution, int attacks)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyConstitution(constitution, game.Chars[0]);
 
             for (var i = 0; i < attacks; i++)
@@ -427,11 +437,11 @@ namespace Smelly.Code.Core.Test
         public void GivenGameHasStartedWhenSecondCharacterAttacksTheFirstThenFirstCharacterTakesDamage()
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             
             game.Attack(10, game.Chars[0]);
 
-            game.Chars[0].HitPoints.Should().Be(4);
+            game.Chars[0].HitPts.Should().Be(4);
         }
         
         [Theory]
@@ -447,12 +457,12 @@ namespace Smelly.Code.Core.Test
         public void GivenSecondCharacterHasStrengthWithNegativeModifierWhenRollIsModifiedToBeLessThanArmorThenFirstCharacterTakesOneDamage(int strength, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyStrength(strength, game.Chars[1]);
 
             game.Attack(9 - modifier, game.Chars[0]);
 
-            game.Chars[0].HitPoints.Should().Be(4);
+            game.Chars[0].HitPts.Should().Be(4);
         }
         
         [Theory]
@@ -468,12 +478,12 @@ namespace Smelly.Code.Core.Test
         public void GivenSecondCharacterHasStrengthWithNegativeModifierWhenRollIsModifiedToBeGreaterThanArmorThenSecondCharacterTakesTwoDamage(int strength, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyStrength(strength, game.Chars[1]);
 
             game.Attack(10 - modifier, game.Chars[0]);
 
-            game.Chars[0].HitPoints.Should().Be(3);
+            game.Chars[0].HitPts.Should().Be(3);
         }
         
         [Theory]
@@ -489,12 +499,12 @@ namespace Smelly.Code.Core.Test
         public void GivenSecondCharacterHasStrengthWithPositiveModifierWhenRollIsModifiedToBeGreaterThanArmorThenSecondCharacterTakesModifierDamage(int strength, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyStrength(strength, game.Chars[1]);
             
             game.Attack(10 - modifier, game.Chars[0]);
 
-            game.Chars[0].HitPoints.Should().Be(4 - modifier);
+            game.Chars[0].HitPts.Should().Be(4 - modifier);
         }
 
         [Theory]
@@ -510,12 +520,12 @@ namespace Smelly.Code.Core.Test
         public void GivenSecondCharacterHasStrengthWithPositiveModifierWhenRollIsModifiedToBeLessThanArmorThenSecondCharacterTakesOneDamage(int strength, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyStrength(strength, game.Chars[1]);
             
             game.Attack(9 - modifier, game.Chars[0]);
 
-            game.Chars[0].HitPoints.Should().Be(4);
+            game.Chars[0].HitPts.Should().Be(4);
         }
 
         [Theory]
@@ -531,12 +541,12 @@ namespace Smelly.Code.Core.Test
         public void GivenFirstCharacterHasDexterityWithNegativeModifierWhenRollIsLessThanModifiedArmorThenFirstCharacterTakesDamage(int dexterity, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyDexterity(dexterity, game.Chars[0]);
             
             game.Attack(10 + modifier, game.Chars[0]);
 
-            game.Chars[0].HitPoints.Should().Be(4);
+            game.Chars[0].HitPts.Should().Be(4);
         }
         
         [Theory]
@@ -552,12 +562,12 @@ namespace Smelly.Code.Core.Test
         public void GivenFirstCharacterHasDexterityWithNegativeModifierWhenRollIsLessThanModifiedArmorThenFirstCharacterDoesNotTakeDamage(int dexterity, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyDexterity(dexterity, game.Chars[0]);
             
             game.Attack(9 + modifier, game.Chars[0]);
 
-            game.Chars[0].HitPoints.Should().Be(5);
+            game.Chars[0].HitPts.Should().Be(5);
         }
         
         [Theory]
@@ -573,12 +583,12 @@ namespace Smelly.Code.Core.Test
         public void GivenFirstCharacterHasDexterityWithPositiveModifierWhenRollIsGreaterThanModifiedArmorThenFirstCharacterTakesDamage(int dexterity, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyDexterity(dexterity, game.Chars[0]);
             
             game.Attack(10 + modifier, game.Chars[0]);
 
-            game.Chars[0].HitPoints.Should().Be(4);
+            game.Chars[0].HitPts.Should().Be(4);
         }
         
         [Theory]
@@ -594,12 +604,12 @@ namespace Smelly.Code.Core.Test
         public void GivenFirstCharacterHasDexterityWithPositiveModifierWhenRollIsLessThanModifiedArmorThenFirstCharacterTakesNoDamage(int dexterity, int modifier)
         {
             var game = new EvercraftGame();
-            game.Start();
+            game.Start("Jack", "Bob");
             game.ApplyDexterity(dexterity, game.Chars[0]);
             
             game.Attack(9 + modifier, game.Chars[0]);
 
-            game.Chars[0].HitPoints.Should().Be(5);
+            game.Chars[0].HitPts.Should().Be(5);
         }
 
         [Fact]
@@ -613,15 +623,17 @@ namespace Smelly.Code.Core.Test
 
             game.Load(_filePath);
 
-            game.Chars[0].Armor.Should().Be(12);
-            game.Str[0].Should().Be(13);
-            game.Dex[0].Should().Be(14);
-            game.Const[0].Should().Be(15);
+            game.Chars[0].Name.Should().Be("Jack");
+            game.Chars[0].Arm.Should().Be(12);
+            game.Chars[0].Str.Should().Be(13);
+            game.Chars[0].Dex.Should().Be(14);
+            game.Chars[0].Const.Should().Be(15);
             
-            game.Chars[1].Armor.Should().Be(13);
-            game.Str[1].Should().Be(14);
-            game.Dex[1].Should().Be(15);
-            game.Const[1].Should().Be(16);
+            game.Chars[1].Name.Should().Be("Bob");
+            game.Chars[1].Arm.Should().Be(13);
+            game.Chars[1].Str.Should().Be(14);
+            game.Chars[1].Dex.Should().Be(15);
+            game.Chars[1].Const.Should().Be(16);
         }
 
         [Fact]
@@ -639,15 +651,17 @@ namespace Smelly.Code.Core.Test
 
             game.Load(_otherFilePath);
 
-            game.Chars[0].Armor.Should().Be(13);
-            game.Str[0].Should().Be(14);
-            game.Dex[0].Should().Be(15);
-            game.Const[0].Should().Be(16);
+            game.Chars[0].Name.Should().Be("bob");
+            game.Chars[0].Arm.Should().Be(13);
+            game.Chars[0].Str.Should().Be(14);
+            game.Chars[0].Dex.Should().Be(15);
+            game.Chars[0].Const.Should().Be(16);
             
-            game.Chars[1].Armor.Should().Be(2);
-            game.Str[1].Should().Be(3);
-            game.Dex[1].Should().Be(4);
-            game.Const[1].Should().Be(5);
+            game.Chars[1].Name.Should().Be("jack");
+            game.Chars[1].Arm.Should().Be(2);
+            game.Chars[1].Str.Should().Be(3);
+            game.Chars[1].Dex.Should().Be(4);
+            game.Chars[1].Const.Should().Be(5);
         }
 
         [Fact]
@@ -674,15 +688,17 @@ namespace Smelly.Code.Core.Test
 
             game.Load(_otherOtherFilePath);
             
-            game.Chars[0].Armor.Should().Be(9);
-            game.Str[0].Should().Be(8);
-            game.Dex[0].Should().Be(7);
-            game.Const[0].Should().Be(6);
+            game.Chars[0].Name.Should().Be("John");
+            game.Chars[0].Arm.Should().Be(9);
+            game.Chars[0].Str.Should().Be(8);
+            game.Chars[0].Dex.Should().Be(7);
+            game.Chars[0].Const.Should().Be(6);
             
-            game.Chars[1].Armor.Should().Be(20);
-            game.Str[1].Should().Be(20);
-            game.Dex[1].Should().Be(20);
-            game.Const[1].Should().Be(20);
+            game.Chars[1].Name.Should().Be("Jim");
+            game.Chars[1].Arm.Should().Be(20);
+            game.Chars[1].Str.Should().Be(20);
+            game.Chars[1].Dex.Should().Be(20);
+            game.Chars[1].Const.Should().Be(20);
         }
 
         public void Dispose()
