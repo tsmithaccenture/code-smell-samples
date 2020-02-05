@@ -4,3 +4,4 @@ bin/
 .vs/
 **/*.user
 **/.DS_Store
+node_modules/
