@@ -1,7 +1,7 @@
 import { Character } from './character';
 import { ARMOR_TYPE } from './armor-type';
 import fs from 'fs';
-import sqlite from 'sqlite3';
+import sqlite from 'sqlite';
 
 export class EvercraftGame {
   attacked = [false, false];
@@ -202,37 +202,30 @@ export class EvercraftGame {
   };
 
   load = (filePath) => {
-    if (filePath.endsWith(".json"))
-    {
+    if (filePath.endsWith('.json')) {
       return new Promise((resolve, reject) => {
-        fs.readFile(filePath, { encoding: 'utf8'}, (err, contents) => {
+        fs.readFile(filePath, { encoding: 'utf8' }, (err, contents) => {
           const json = JSON.parse(contents);
           const characters = json.characters;
-          for (let i = 0; i < characters.length; i++)
-          {
+          for (let i = 0; i < characters.length; i++) {
             this.chars[i] = new Character(characters[i].name, 5, characters[i].arm, characters[i].str, characters[i].dex, characters[i].const);
           }
           resolve();
-        })
-      });
-    }
-    else if (filePath.endsWith(".db"))
-    {
-      return new Promise((resolve, reject) => {
-        const db = new sqlite.Database(`Data Source=${filePath}`);
-        db.all('select [Name], Armor, Str, Dex, Const from [Characters]', (err, rows) => {
-            for(let i = 0; i < rows.length; i++) {
-              this.chars[i] = new Character(characters[i].Name, 5, characters[i].Armor, characters[i].Str, characters[i].Dex, characters[i].Const);
-            }
-            db.close();
-            resolve();
         });
       });
-    }
-    else
-    {
+    } else if (filePath.endsWith('.db')) {
+      return new Promise(async (resolve, reject) => {
+        const db = await sqlite.open(filePath, { Promise });
+        const rows = await db.all('select Name, Armor, Str, Dex, Const from [Characters]');
+        for (let i = 0; i < rows.length; i++) {
+          this.chars[i] = new Character(rows[i].Name, 5, rows[i].Armor, rows[i].Str, rows[i].Dex, rows[i].Const);
+        }
+        await db.close();
+        resolve();
+      });
+    } else {
       return new Promise((resolve, reject) => {
-        fs.readFile(filePath, { encoding: 'utf8'}, (err, contents) => {
+        fs.readFile(filePath, { encoding: 'utf8' }, (err, contents) => {
           const lines = contents.split('\n');
           for (let i = 1; i < lines.length; i++) {
             const values = lines[i].split(',');
@@ -242,5 +235,5 @@ export class EvercraftGame {
         });
       });
     }
-  }
+  };
 }

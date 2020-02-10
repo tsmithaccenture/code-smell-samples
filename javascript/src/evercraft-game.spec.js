@@ -2,12 +2,27 @@ import { EvercraftGame } from './evercraft-game';
 import { ARMOR_TYPE } from './armor-type';
 import fs from 'fs';
 import path from 'path';
-import sqlite from 'sqlite3';
+import sqlite from 'sqlite';
 
 const FILE_PATH = path.resolve(__dirname, 'characters.csv');
 const OTHER_FILE_PATH = path.resolve(__dirname, 'characters.json');
+const OTHER_OTHER_FILE_PATH = path.resolve(__dirname, 'characters.db');
 
 describe('EvercraftGame', () => {
+  beforeEach(() => {
+    if (fs.existsSync(FILE_PATH)) {
+      fs.unlinkSync(FILE_PATH);
+    }
+
+    if (fs.existsSync(OTHER_FILE_PATH)) {
+      fs.unlinkSync(OTHER_FILE_PATH);
+    }
+
+    if (fs.existsSync(OTHER_OTHER_FILE_PATH)) {
+      fs.unlinkSync(OTHER_OTHER_FILE_PATH);
+    }
+  });
+
   describe('start', () => {
     it('should have default characters', () => {
       const game = new EvercraftGame();
@@ -616,6 +631,26 @@ describe('EvercraftGame', () => {
 
     it('should load characters from sqlite', async () => {
 
+      const db = await sqlite.open(OTHER_OTHER_FILE_PATH, { Promise });
+      await db.run('create table [Characters] (Id integer primary key asc, Name Text, Armor integer, Str integer, Dex integer, Const integer);');
+      await db.run('insert into [Characters] (Name, Armor, Str, Dex, Const) values (\'John\', 9, 8, 7, 6);');
+      await db.run('insert into [Characters] (Name, Armor, Str, Dex, Const) values (\'Jim\', 20, 20, 20, 20);');
+      await db.close();
+
+      const game = new EvercraftGame();
+      await game.load(OTHER_OTHER_FILE_PATH);
+
+      expect(game.chars[0].name).toEqual('John');
+      expect(game.chars[0].arm).toEqual(9);
+      expect(game.chars[0].str).toEqual(8);
+      expect(game.chars[0].dex).toEqual(7);
+      expect(game.chars[0].cst).toEqual(6);
+
+      expect(game.chars[1].name).toEqual('Jim');
+      expect(game.chars[1].arm).toEqual(20);
+      expect(game.chars[1].str).toEqual(20);
+      expect(game.chars[1].dex).toEqual(20);
+      expect(game.chars[1].cst).toEqual(20);
     });
   });
 });
