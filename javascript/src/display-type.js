@@ -1,4 +1,4 @@
 export const DISPLAY_TYPE  = {
-  React: 'React',
+  Web: 'Web',
   Console: 'Console'
 };
